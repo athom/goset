@@ -44,17 +44,17 @@ func areAvailableSlices(v1, v2 reflect.Value) bool {
 	return reflect.TypeOf(v1).Kind().String() == reflect.TypeOf(v2).Kind().String()
 }
 
-func Intersection(aSet interface{}, bSet interface{}) (iSet interface{}, err error) {
-	_, iSet, _, _, err = DifferSet(aSet, bSet)
+func Intersection(aSet interface{}, bSet interface{}) (iSet interface{}) {
+	_, iSet, _, _, _ = Difference(aSet, bSet)
 	return
 }
 
-func Union(aSet interface{}, bSet interface{}) (uSet interface{}, err error) {
-	uSet, _, _, _, err = DifferSet(aSet, bSet)
+func Union(aSet interface{}, bSet interface{}) (uSet interface{}) {
+	uSet, _, _, _, _ = Difference(aSet, bSet)
 	return
 }
 
-func DifferSet(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADifferenceSet, iBDifferenceSet interface{}, err error) {
+func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADifferenceSet, iBDifferenceSet interface{}, err error) {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
 	if !areAvailableSlices(av, bv) {
