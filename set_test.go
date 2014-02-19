@@ -169,6 +169,98 @@ func (s *TestSet) TestIsIncluded(c *C) {
 	c.Check(IsIncluded(set, Id1), Equals, false)
 }
 
+func (s *TestSet) TestIsSubset(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	Id5 := bson.NewObjectId()
+	var superSet1, superSet2, subSet1, subSet2, subSet3, subSet4, subSet5 []bson.ObjectId
+
+	//Happy path
+	superSet1 = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	superSet2 = []bson.ObjectId{}
+	subSet1 = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	subSet2 = []bson.ObjectId{}
+	subSet3 = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	subSet4 = []bson.ObjectId{
+		Id3,
+		Id4,
+	}
+	subSet5 = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+		Id5,
+	}
+
+	c.Check(IsSubset(subSet1, superSet1), Equals, true)
+	c.Check(IsSubset(subSet2, superSet1), Equals, true)
+	c.Check(IsSubset(subSet3, superSet1), Equals, true)
+	c.Check(IsSubset(subSet4, superSet1), Equals, false)
+	c.Check(IsSubset(subSet5, superSet1), Equals, false)
+	c.Check(IsSubset(subSet2, superSet2), Equals, true)
+	c.Check(IsSubset(subSet4, superSet2), Equals, false)
+}
+
+func (s *TestSet) TestIsSuperset(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	Id5 := bson.NewObjectId()
+	var superSet1, superSet2, subSet1, subSet2, subSet3, subSet4, subSet5 []bson.ObjectId
+
+	//Happy path
+	superSet1 = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	superSet2 = []bson.ObjectId{}
+	subSet1 = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	subSet2 = []bson.ObjectId{}
+	subSet3 = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	subSet4 = []bson.ObjectId{
+		Id3,
+		Id4,
+	}
+	subSet5 = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+		Id5,
+	}
+
+	c.Check(IsSuperset(superSet1, subSet1), Equals, true)
+	c.Check(IsSuperset(superSet1, subSet2), Equals, true)
+	c.Check(IsSuperset(superSet1, subSet3), Equals, true)
+	c.Check(IsSuperset(superSet1, subSet4), Equals, false)
+	c.Check(IsSuperset(superSet1, subSet5), Equals, false)
+	c.Check(IsSuperset(superSet2, subSet2), Equals, true)
+	c.Check(IsSuperset(superSet2, subSet4), Equals, false)
+}
+
 func (s *TestSet) TestUniq(c *C) {
 	Id1 := bson.NewObjectId()
 	Id2 := bson.NewObjectId()
@@ -259,8 +351,7 @@ func (s *TestSet) TestDiffSet(c *C) {
 		bId4,
 	}
 
-	uSet, iSet, aSubSet, bSubSet, err := Difference(aSet, bSet)
-	c.Check(err, Equals, nil)
+	uSet, iSet, aSubSet, bSubSet := Difference(aSet, bSet)
 	checkSet(eUSet, eISet, eASet, eBSet, uSet, iSet, aSubSet, bSubSet, c)
 
 	//A contains B
@@ -292,8 +383,7 @@ func (s *TestSet) TestDiffSet(c *C) {
 	}
 	eBSet = []bson.ObjectId{}
 
-	uSet, iSet, aSubSet, bSubSet, err = Difference(aSet, bSet)
-	c.Check(err, Equals, nil)
+	uSet, iSet, aSubSet, bSubSet = Difference(aSet, bSet)
 	checkSet(eUSet, eISet, eASet, eBSet, uSet, iSet, aSubSet, bSubSet, c)
 
 	//A inside B
@@ -324,8 +414,7 @@ func (s *TestSet) TestDiffSet(c *C) {
 		aId2,
 	}
 
-	uSet, iSet, aSubSet, bSubSet, err = Difference(aSet, bSet)
-	c.Check(err, Equals, nil)
+	uSet, iSet, aSubSet, bSubSet = Difference(aSet, bSet)
 	checkSet(eUSet, eISet, eASet, eBSet, uSet, iSet, aSubSet, bSubSet, c)
 
 	//A and B has no commen
@@ -354,8 +443,7 @@ func (s *TestSet) TestDiffSet(c *C) {
 		bId4,
 	}
 
-	uSet, iSet, aSubSet, bSubSet, err = Difference(aSet, bSet)
-	c.Check(err, Equals, nil)
+	uSet, iSet, aSubSet, bSubSet = Difference(aSet, bSet)
 	checkSet(eUSet, eISet, eASet, eBSet, uSet, iSet, aSubSet, bSubSet, c)
 
 	//String type related testing
@@ -405,8 +493,7 @@ func (s *TestSet) TestDiffSet(c *C) {
 		bStr4,
 	}
 
-	uStrSet, iStrSet, aStrSubSet, bStrSubSet, _ := Difference(aStrSet, bStrSet)
-	c.Check(err, Equals, nil)
+	uStrSet, iStrSet, aStrSubSet, bStrSubSet := Difference(aStrSet, bStrSet)
 	checkSetStr(eStrUSet, eStrISet, eStrASet, eStrBSet, uStrSet, iStrSet, aStrSubSet, bStrSubSet, c)
 
 	//A contains B
@@ -438,8 +525,7 @@ func (s *TestSet) TestDiffSet(c *C) {
 	}
 	eStrBSet = []string{}
 
-	uStrSet, iStrSet, aStrSubSet, bStrSubSet, err = Difference(aStrSet, bStrSet)
-	c.Check(err, Equals, nil)
+	uStrSet, iStrSet, aStrSubSet, bStrSubSet = Difference(aStrSet, bStrSet)
 	checkSetStr(eStrUSet, eStrISet, eStrASet, eStrBSet, uStrSet, iStrSet, aStrSubSet, bStrSubSet, c)
 
 	//A inside B
@@ -470,8 +556,7 @@ func (s *TestSet) TestDiffSet(c *C) {
 		aStr2,
 	}
 
-	uStrSet, iStrSet, aStrSubSet, bStrSubSet, err = Difference(aStrSet, bStrSet)
-	c.Check(err, Equals, nil)
+	uStrSet, iStrSet, aStrSubSet, bStrSubSet = Difference(aStrSet, bStrSet)
 	checkSetStr(eStrUSet, eStrISet, eStrASet, eStrBSet, uStrSet, iStrSet, aStrSubSet, bStrSubSet, c)
 
 	//A and B has no commen
@@ -500,8 +585,7 @@ func (s *TestSet) TestDiffSet(c *C) {
 		bStr4,
 	}
 
-	uStrSet, iStrSet, aStrSubSet, bStrSubSet, err = Difference(aStrSet, bStrSet)
-	c.Check(err, Equals, nil)
+	uStrSet, iStrSet, aStrSubSet, bStrSubSet = Difference(aStrSet, bStrSet)
 	checkSetStr(eStrUSet, eStrISet, eStrASet, eStrBSet, uStrSet, iStrSet, aStrSubSet, bStrSubSet, c)
 }
 

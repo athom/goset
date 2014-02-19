@@ -29,12 +29,6 @@ func areAvailableSlices(v1, v2 reflect.Value) bool {
 	if !isAvailableSlice(v2) {
 		return false
 	}
-	if v1.Len() == 0 && v2.Len() != 0 {
-		return false
-	}
-	if v1.Len() != 0 && v2.Len() == 0 {
-		return false
-	}
 	if v1.Len() == 0 && v2.Len() == 0 {
 		return true
 	}

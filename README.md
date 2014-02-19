@@ -16,8 +16,8 @@ Go Set Package is a simple library for set operations with generic type supporte
 ###### 1. IsUniq
 ###### 2. IsEqual
 ###### 3. IsIncluded
-###### 4. IsSubSet
-###### 5. IsSuperSet
+###### 4. IsSubset
+###### 5. IsSuperset
 
 
 #### Operations

@@ -40,21 +40,21 @@ func Uniq(elements interface{}) (r interface{}) {
 }
 
 func Intersect(aSet interface{}, bSet interface{}) (iSet interface{}) {
-	_, iSet, _, _, _ = Difference(aSet, bSet)
+	_, iSet, _, _ = Difference(aSet, bSet)
 	return
 }
 
 func Union(aSet interface{}, bSet interface{}) (uSet interface{}) {
-	uSet, _, _, _, _ = Difference(aSet, bSet)
+	uSet, _, _, _ = Difference(aSet, bSet)
 	return
 }
 
-func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADifferenceSet, iBDifferenceSet interface{}, err error) {
+func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADifferenceSet, iBDifferenceSet interface{}) {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
 	if !areAvailableSlices(av, bv) {
-		err = errors.New("A set and B set should be slices and have the same type of elements")
-		return
+		err := errors.New("A set and B set should be slices and have the same type of elements")
+		panic(err)
 	}
 
 	var union = reflect.MakeSlice(reflect.TypeOf(aSet), 0, av.Cap()+bv.Cap())
@@ -200,4 +200,14 @@ func IsIncluded(set interface{}, ele interface{}) bool {
 	}
 
 	return false
+}
+
+func IsSubset(subSet interface{}, superSet interface{}) (r bool) {
+	_, _, aSubSet, _ := Difference(subSet, superSet)
+	return reflect.ValueOf(aSubSet).Len() == 0
+}
+
+func IsSuperset(subSet interface{}, superSet interface{}) (r bool) {
+	_, _, _, bSubSet := Difference(subSet, superSet)
+	return reflect.ValueOf(bSubSet).Len() == 0
 }

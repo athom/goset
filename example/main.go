@@ -46,7 +46,7 @@ func main() {
 	aSet := []int{1, 2, 3}
 	bSet := []int{3, 4, 5}
 	//Difference
-	uSet, iSet, aDiff, bDiff, _ := goset.Difference(aSet, bSet)
+	uSet, iSet, aDiff, bDiff := goset.Difference(aSet, bSet)
 	fmt.Println("Set Diffence:")
 	fmt.Println("Intersetion:", iSet)
 	fmt.Println("Union:", uSet)
