@@ -2,6 +2,7 @@ package goset
 
 import (
 	"errors"
+
 	"reflect"
 )
 
@@ -171,4 +172,32 @@ func IsEqual(aSet interface{}, bSet interface{}) (r bool) {
 	}
 
 	return hits == av.Len() && hits == bv.Len()
+}
+
+func IsIncluded(set interface{}, ele interface{}) bool {
+	ev := reflect.ValueOf(ele)
+	if !ev.IsValid() {
+		return true
+	}
+	v := reflect.ValueOf(set)
+	if !isAvailableSlice(v) {
+		return false
+	}
+	if v.Len() == 0 {
+		return false
+	}
+	if reflect.TypeOf(ev).String() != reflect.TypeOf(v.Index(0)).String() {
+		return false
+	}
+
+	for i := 0; i < v.Len(); i++ {
+		if reflect.DeepEqual(
+			v.Index(i).Interface(),
+			ev.Interface(),
+		) {
+			return true
+		}
+	}
+
+	return false
 }

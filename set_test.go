@@ -12,85 +12,7 @@ type TestSet struct{}
 
 var _ = Suite(&TestSet{})
 
-func (s *TestSet) TestIsUniq(c *C) {
-	Id1 := bson.NewObjectId()
-	Id2 := bson.NewObjectId()
-	Id3 := bson.NewObjectId()
-	Id4 := bson.NewObjectId()
-	var set []bson.ObjectId
-
-	//Happy path
-	set = []bson.ObjectId{
-		Id1,
-		Id2,
-		Id3,
-		Id4,
-	}
-	c.Check(IsUniq(set), Equals, true)
-
-	//Empty slice
-	set = []bson.ObjectId{}
-	c.Check(IsUniq(set), Equals, true)
-
-	//One element
-	set = []bson.ObjectId{
-		Id1,
-	}
-	c.Check(IsUniq(set), Equals, true)
-
-	//With repeat element
-	set = []bson.ObjectId{
-		Id1,
-		Id1,
-		Id2,
-	}
-	c.Check(IsUniq(set), Equals, false)
-}
-
-func (s *TestSet) TestUniq(c *C) {
-	Id1 := bson.NewObjectId()
-	Id2 := bson.NewObjectId()
-	Id3 := bson.NewObjectId()
-	Id4 := bson.NewObjectId()
-	var set, eSet []bson.ObjectId
-
-	//Happy path
-	set = []bson.ObjectId{
-		Id1,
-		Id2,
-		Id2,
-		Id3,
-		Id3,
-		Id3,
-		Id4,
-		Id4,
-		Id4,
-		Id4,
-	}
-	eSet = []bson.ObjectId{
-		Id1,
-		Id2,
-		Id3,
-		Id4,
-	}
-	c.Check(IsEqual(eSet, Uniq(set).([]bson.ObjectId)), Equals, true)
-
-	//Empty slice
-	set = []bson.ObjectId{}
-	eSet = []bson.ObjectId{}
-	c.Check(IsEqual(eSet, Uniq(set).([]bson.ObjectId)), Equals, true)
-
-	//One element
-	set = []bson.ObjectId{
-		Id1,
-	}
-	eSet = []bson.ObjectId{
-		Id1,
-	}
-	c.Check(IsEqual(eSet, Uniq(set).([]bson.ObjectId)), Equals, true)
-}
-
-func (s *TestSet) TestEqual(c *C) {
+func (s *TestSet) TestIsEqual(c *C) {
 	Id1 := bson.NewObjectId()
 	Id2 := bson.NewObjectId()
 	Id3 := bson.NewObjectId()
@@ -185,6 +107,109 @@ func (s *TestSet) TestEqual(c *C) {
 		Id5,
 	}
 	c.Check(IsEqual(aSet, bSet), Equals, false)
+}
+
+func (s *TestSet) TestIsUniq(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	var set []bson.ObjectId
+
+	//Happy path
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+	}
+	c.Check(IsUniq(set), Equals, true)
+
+	//Empty slice
+	set = []bson.ObjectId{}
+	c.Check(IsUniq(set), Equals, true)
+
+	//One element
+	set = []bson.ObjectId{
+		Id1,
+	}
+	c.Check(IsUniq(set), Equals, true)
+
+	//With repeat element
+	set = []bson.ObjectId{
+		Id1,
+		Id1,
+		Id2,
+	}
+	c.Check(IsUniq(set), Equals, false)
+}
+
+func (s *TestSet) TestIsIncluded(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	var set []bson.ObjectId
+
+	//Happy path
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	c.Check(IsIncluded(set, nil), Equals, true)
+	c.Check(IsIncluded(set, Id1), Equals, true)
+	c.Check(IsIncluded(set, Id2), Equals, true)
+	c.Check(IsIncluded(set, Id3), Equals, true)
+	c.Check(IsIncluded(set, Id4), Equals, false)
+
+	//Empty slice
+	set = []bson.ObjectId{}
+	c.Check(IsIncluded(set, nil), Equals, true)
+	c.Check(IsIncluded(set, Id1), Equals, false)
+}
+
+func (s *TestSet) TestUniq(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	var set, eSet []bson.ObjectId
+
+	//Happy path
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id2,
+		Id3,
+		Id3,
+		Id3,
+		Id4,
+		Id4,
+		Id4,
+		Id4,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+	}
+	c.Check(IsEqual(eSet, Uniq(set).([]bson.ObjectId)), Equals, true)
+
+	//Empty slice
+	set = []bson.ObjectId{}
+	eSet = []bson.ObjectId{}
+	c.Check(IsEqual(eSet, Uniq(set).([]bson.ObjectId)), Equals, true)
+
+	//One element
+	set = []bson.ObjectId{
+		Id1,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+	}
+	c.Check(IsEqual(eSet, Uniq(set).([]bson.ObjectId)), Equals, true)
 }
 
 func (s *TestSet) TestDiffSet(c *C) {
