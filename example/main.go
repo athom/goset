@@ -39,7 +39,7 @@ func main() {
 		Avatar{33, "Kuruk"},
 	}
 	// Equal detector
-	equal := goset.Equal(dupAvatars, filteredAvatars)
+	equal := goset.IsEqual(dupAvatars, filteredAvatars)
 	fmt.Println(equal)
 
 	// Set operations
@@ -53,7 +53,7 @@ func main() {
 	fmt.Println("A Differnce:", aDiff)
 	fmt.Println("B Differnce:", bDiff)
 	//Intersetion
-	iSet = goset.Intersection(aSet, bSet).([]int)
+	iSet = goset.Intersect(aSet, bSet).([]int)
 	fmt.Println("Set Intersection:")
 	fmt.Println(iSet)
 	//Union

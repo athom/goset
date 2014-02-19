@@ -5,46 +5,40 @@ import (
 	"reflect"
 )
 
-func isAvailableSlice(v reflect.Value) bool {
-	if v.Kind() != reflect.Slice {
-		return false
+// Operations
+func Uniq(elements interface{}) (r interface{}) {
+	v := reflect.ValueOf(elements)
+	if !isAvailableSlice(v) {
+		r = elements
+		return
+	}
+	if v.Len() <= 1 {
+		r = elements
+		return
 	}
 
-	var kind string
+	slim := reflect.MakeSlice(reflect.TypeOf(elements), 0, v.Cap())
 	for i := 0; i < v.Len(); i++ {
-		eleKind := reflect.TypeOf(v.Index(i)).Kind().String()
-		if i == 0 {
-			kind = eleKind
-		} else {
-			if kind != eleKind {
-				return false
+		found := false
+		for j := 0; j < slim.Len(); j++ {
+			if reflect.DeepEqual(
+				v.Index(i).Interface(),
+				slim.Index(j).Interface(),
+			) {
+				found = true
 			}
 		}
+		if found {
+			continue
+		}
+		slim = reflect.Append(slim, v.Index(i))
 	}
 
-	return true
+	r = slim.Interface()
+	return
 }
 
-func areAvailableSlices(v1, v2 reflect.Value) bool {
-	if !isAvailableSlice(v1) {
-		return false
-	}
-	if !isAvailableSlice(v2) {
-		return false
-	}
-	if v1.Len() == 0 && v2.Len() != 0 {
-		return false
-	}
-	if v1.Len() != 0 && v2.Len() == 0 {
-		return false
-	}
-	if v1.Len() == 0 && v2.Len() == 0 {
-		return true
-	}
-	return reflect.TypeOf(v1).Kind().String() == reflect.TypeOf(v2).Kind().String()
-}
-
-func Intersection(aSet interface{}, bSet interface{}) (iSet interface{}) {
+func Intersect(aSet interface{}, bSet interface{}) (iSet interface{}) {
 	_, iSet, _, _, _ = Difference(aSet, bSet)
 	return
 }
@@ -109,6 +103,7 @@ func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADi
 	return
 }
 
+// Detections
 func IsUniq(aSet interface{}) (r bool) {
 	v := reflect.ValueOf(aSet)
 	if !isAvailableSlice(v) {
@@ -131,40 +126,7 @@ func IsUniq(aSet interface{}) (r bool) {
 	return IsUniq(others.Interface())
 }
 
-func Uniq(elements interface{}) (r interface{}) {
-	v := reflect.ValueOf(elements)
-	if !isAvailableSlice(v) {
-		r = elements
-		return
-	}
-	if v.Len() <= 1 {
-		r = elements
-		return
-	}
-
-	slim := reflect.MakeSlice(reflect.TypeOf(elements), 0, v.Cap())
-	for i := 0; i < v.Len(); i++ {
-		found := false
-		for j := 0; j < slim.Len(); j++ {
-			if reflect.DeepEqual(
-				v.Index(i).Interface(),
-				slim.Index(j).Interface(),
-			) {
-				found = true
-			}
-		}
-		if found {
-			continue
-		}
-		slim = reflect.Append(slim, v.Index(i))
-	}
-
-	r = slim.Interface()
-	return
-
-}
-
-func Equal(aSet interface{}, bSet interface{}) (r bool) {
+func IsEqual(aSet interface{}, bSet interface{}) (r bool) {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
 	if av.Len() != bv.Len() {
