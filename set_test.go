@@ -740,6 +740,146 @@ func (s *TestSet) TestAddElements(c *C) {
 	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
 }
 
+func (s *TestSet) TestRemoveElement(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	Id5 := bson.NewObjectId()
+	var set, eSet []bson.ObjectId
+	var i interface{}
+
+	//Happy path
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	i = RemoveElement(set, Id3)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Remove non-exist element
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	i = RemoveElement(set, Id4)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Remove on empty slice
+	set = []bson.ObjectId{}
+	eSet = []bson.ObjectId{}
+	i = RemoveElement(set, Id5)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+}
+
+func (s *TestSet) TestRemoveElements(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	Id5 := bson.NewObjectId()
+	var set, eSet, aSet []bson.ObjectId
+	var i interface{}
+
+	//Happy path
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+		Id5,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	aSet = []bson.ObjectId{
+		Id4,
+		Id5,
+	}
+	i = RemoveElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Remove empty slice
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	aSet = []bson.ObjectId{}
+	i = RemoveElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Remove on empty slice
+	set = []bson.ObjectId{}
+	eSet = []bson.ObjectId{}
+	aSet = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	i = RemoveElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Remove empty slice oo empty slice
+	set = []bson.ObjectId{}
+	eSet = []bson.ObjectId{}
+	aSet = []bson.ObjectId{}
+	i = RemoveElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Remove slice has intersetion with old slice
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	aSet = []bson.ObjectId{
+		Id3,
+		Id4,
+		Id5,
+	}
+	i = RemoveElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Remove slice that has no comment element with old slice
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	aSet = []bson.ObjectId{
+		Id4,
+		Id5,
+	}
+	i = RemoveElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+}
+
 func checkSet(eUSet, eISet, eASet, eBSet []bson.ObjectId, uSet, iSet, aSubSet, bSubSet interface{}, c *C) {
 	assertSet(eUSet, uSet.([]bson.ObjectId), c)
 	assertSet(eISet, iSet.([]bson.ObjectId), c)

@@ -148,6 +148,55 @@ func AddElements(aSet interface{}, bSet interface{}) (r interface{}) {
 	return
 }
 
+func RemoveElement(set interface{}, e interface{}) (r interface{}) {
+	v := reflect.ValueOf(set)
+	if !isAvailableSlice(v) {
+		panic("Invalid Slice")
+		return
+	}
+
+	r = set
+	if v.Len() == 0 {
+		return
+	}
+
+	ev := reflect.ValueOf(e)
+	if ev.Len() == 0 {
+		return
+	}
+
+	for i := 0; i < v.Len(); i++ {
+		if reflect.DeepEqual(
+			e,
+			v.Index(i).Interface(),
+		) {
+			v = reflect.AppendSlice(
+				v.Slice(0, i),
+				v.Slice(i+1, v.Len()),
+			)
+			r = v.Interface()
+			return
+		}
+	}
+
+	return
+}
+
+func RemoveElements(aSet interface{}, bSet interface{}) (r interface{}) {
+	av := reflect.ValueOf(aSet)
+	bv := reflect.ValueOf(bSet)
+	if !areAvailableSlices(av, bv) {
+		panic("Invalid Slices")
+		return
+	}
+
+	for i := 0; i < bv.Len(); i++ {
+		aSet = RemoveElement(aSet, bv.Index(i).Interface())
+	}
+	r = Uniq(aSet)
+	return
+}
+
 // Detections
 func IsUniq(aSet interface{}) (r bool) {
 	v := reflect.ValueOf(aSet)
