@@ -144,3 +144,7 @@ Go Set Package is a simple library for set operations with generic type supporte
 ## License
 
 Go Set is released under the [WTFPL License](http://www.wtfpl.net/txt/copying).
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/athom/goset/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
