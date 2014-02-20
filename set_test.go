@@ -589,6 +589,157 @@ func (s *TestSet) TestDiffSet(c *C) {
 	checkSetStr(eStrUSet, eStrISet, eStrASet, eStrBSet, uStrSet, iStrSet, aStrSubSet, bStrSubSet, c)
 }
 
+func (s *TestSet) TestAddElement(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	var set, eSet []bson.ObjectId
+	var i interface{}
+
+	//Happy path
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+	}
+	i = AddElement(set, Id4)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Add to empty slice
+	set = []bson.ObjectId{}
+	eSet = []bson.ObjectId{
+		Id1,
+	}
+	i = AddElement(set, Id1)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Add exists element
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	i = AddElement(set, Id3)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+}
+
+func (s *TestSet) TestAddElements(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	Id5 := bson.NewObjectId()
+	var set, eSet, aSet []bson.ObjectId
+	var i interface{}
+
+	//Happy path
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+		Id5,
+	}
+	aSet = []bson.ObjectId{
+		Id4,
+		Id5,
+	}
+	i = AddElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Add to empty slice
+	set = []bson.ObjectId{}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	aSet = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	i = AddElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Add empty slice
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+	}
+	aSet = []bson.ObjectId{}
+	i = AddElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Add empty slice to empty slice
+	set = []bson.ObjectId{}
+	eSet = []bson.ObjectId{}
+	aSet = []bson.ObjectId{}
+	i = AddElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Add slice has intersetion with old slice
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+		Id5,
+	}
+	aSet = []bson.ObjectId{
+		Id3,
+		Id4,
+		Id5,
+	}
+	i = AddElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+
+	//Add slice is subset of old slice
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+	}
+	eSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+	}
+	aSet = []bson.ObjectId{
+		Id2,
+		Id3,
+	}
+	i = AddElements(set, aSet)
+	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+}
+
 func checkSet(eUSet, eISet, eASet, eBSet []bson.ObjectId, uSet, iSet, aSubSet, bSubSet interface{}, c *C) {
 	assertSet(eUSet, uSet.([]bson.ObjectId), c)
 	assertSet(eISet, iSet.([]bson.ObjectId), c)

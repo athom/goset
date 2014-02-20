@@ -1,10 +1,6 @@
 package goset
 
-import (
-	"errors"
-
-	"reflect"
-)
+import "reflect"
 
 // Operations
 func Uniq(elements interface{}) (r interface{}) {
@@ -53,8 +49,7 @@ func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADi
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
 	if !areAvailableSlices(av, bv) {
-		err := errors.New("A set and B set should be slices and have the same type of elements")
-		panic(err)
+		panic("A set and B set should be slices and have the same type of elements")
 	}
 
 	var union = reflect.MakeSlice(reflect.TypeOf(aSet), 0, av.Cap()+bv.Cap())
@@ -101,6 +96,55 @@ func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADi
 	iADifferenceSet = aDifferenceSet.Interface()
 	iBDifferenceSet = bDifferenceSet.Interface()
 
+	return
+}
+
+func AddElement(set interface{}, e interface{}) (r interface{}) {
+	v := reflect.ValueOf(set)
+	if v.Type().Elem() != reflect.TypeOf(e) {
+		panic("Set and element are not the same type")
+		return
+	}
+
+	if !isAvailableSlice(v) {
+		panic("Invalid Slice")
+		return
+	}
+
+	if !IsUniq(set) {
+		panic("Set should be uniq")
+		return
+	}
+
+	ev := reflect.ValueOf(e)
+
+	for i := 0; i < v.Len(); i++ {
+		if reflect.DeepEqual(
+			e,
+			v.Index(i).Interface(),
+		) {
+			r = set
+			return
+		}
+	}
+
+	v = reflect.Append(v, ev)
+	r = v.Interface()
+	return
+}
+
+func AddElements(aSet interface{}, bSet interface{}) (r interface{}) {
+	av := reflect.ValueOf(aSet)
+	bv := reflect.ValueOf(bSet)
+	if !areAvailableSlices(av, bv) {
+		panic("Invalid Slices")
+		return
+	}
+
+	for i := 0; i < bv.Len(); i++ {
+		aSet = AddElement(aSet, bv.Index(i).Interface())
+	}
+	r = Uniq(aSet)
 	return
 }
 
