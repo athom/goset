@@ -161,7 +161,7 @@ func RemoveElement(set interface{}, e interface{}) (r interface{}) {
 	}
 
 	ev := reflect.ValueOf(e)
-	if ev.Len() == 0 {
+	if !ev.IsValid() {
 		return
 	}
 

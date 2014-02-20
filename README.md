@@ -2,6 +2,8 @@
 
 Go Set Package is a simple library for set operations with generic type supported.
 
+[![Build Status](https://api.travis-ci.org/athom/goset.png?branch=master)](https://travis-ci.org/athom/goset)
+
 
 ## Installation
 

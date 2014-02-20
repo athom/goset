@@ -26,7 +26,7 @@ func main() {
 		Avatar{33, "Kuruk"},
 		Avatar{33, "Kuruk"},
 	}
-	// Uniq detector
+	// Uniq detection
 	fmt.Println(goset.IsUniq(avatars))
 	filteredAvatars := goset.Uniq(avatars).([]Avatar)
 	fmt.Println(filteredAvatars)
@@ -38,10 +38,35 @@ func main() {
 		Avatar{230, "Kyoshi"},
 		Avatar{33, "Kuruk"},
 	}
-	// Equal detector
-	equal := goset.IsEqual(dupAvatars, filteredAvatars)
-	fmt.Println(equal)
+	// Equal detection
+	ok := goset.IsEqual(dupAvatars, filteredAvatars)
+	fmt.Println(ok)
 
+	// IsIncluded detection
+	ok = goset.IsIncluded(dupAvatars, Avatar{112, "Angg"})
+	fmt.Println("IsIncluded:", ok)
+
+	// IsSubset detection
+	ok = goset.IsSubset(
+		[]Avatar{
+			Avatar{112, "Angg"},
+			Avatar{70, "Roku"},
+		},
+		dupAvatars,
+	)
+	fmt.Println("IsSubset:", ok)
+
+	// IsSuperset detection
+	ok = goset.IsSuperset(
+		dupAvatars,
+		[]Avatar{
+			Avatar{112, "Angg"},
+			Avatar{70, "Roku"},
+		},
+	)
+	fmt.Println("IsSuperset:", ok)
+
+	fmt.Println("== Operations ==")
 	// Set operations
 	aSet := []int{1, 2, 3}
 	bSet := []int{3, 4, 5}
@@ -54,10 +79,20 @@ func main() {
 	fmt.Println("B Differnce:", bDiff)
 	//Intersetion
 	iSet = goset.Intersect(aSet, bSet).([]int)
-	fmt.Println("Set Intersection:")
-	fmt.Println(iSet)
+	fmt.Println("Set Intersection:", iSet)
 	//Union
 	uSet = goset.Union(aSet, bSet).([]int)
-	fmt.Println("Set Union:")
-	fmt.Println(uSet)
+	fmt.Println("Set Union:", uSet)
+	//AddElement
+	aSet = goset.AddElement(aSet, 4).([]int)
+	fmt.Println("After AddElement", aSet)
+	//AddElements
+	aSet = goset.AddElements(aSet, []int{5, 6, 7}).([]int)
+	fmt.Println("After AddElements", aSet)
+	//RemoveElement
+	aSet = goset.RemoveElement(aSet, 4).([]int)
+	fmt.Println("After RemoveElement", aSet)
+	//RemoveElements
+	aSet = goset.RemoveElements(aSet, []int{5, 6, 7}).([]int)
+	fmt.Println("After RemoveElements", aSet)
 }
