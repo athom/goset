@@ -103,17 +103,14 @@ func AddElement(set interface{}, e interface{}) (r interface{}) {
 	v := reflect.ValueOf(set)
 	if v.Type().Elem() != reflect.TypeOf(e) {
 		panic("Set and element are not the same type")
-		return
 	}
 
 	if !isAvailableSlice(v) {
 		panic("Invalid Slice")
-		return
 	}
 
 	if !IsUniq(set) {
 		panic("Set should be uniq")
-		return
 	}
 
 	ev := reflect.ValueOf(e)
@@ -138,7 +135,6 @@ func AddElements(aSet interface{}, bSet interface{}) (r interface{}) {
 	bv := reflect.ValueOf(bSet)
 	if !areAvailableSlices(av, bv) {
 		panic("Invalid Slices")
-		return
 	}
 
 	for i := 0; i < bv.Len(); i++ {
@@ -152,7 +148,6 @@ func RemoveElement(set interface{}, e interface{}) (r interface{}) {
 	v := reflect.ValueOf(set)
 	if !isAvailableSlice(v) {
 		panic("Invalid Slice")
-		return
 	}
 
 	r = set
@@ -187,7 +182,6 @@ func RemoveElements(aSet interface{}, bSet interface{}) (r interface{}) {
 	bv := reflect.ValueOf(bSet)
 	if !areAvailableSlices(av, bv) {
 		panic("Invalid Slices")
-		return
 	}
 
 	for i := 0; i < bv.Len(); i++ {
