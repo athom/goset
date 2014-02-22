@@ -15,6 +15,15 @@ Go Set Package is a simple library for set operations with generic type supporte
 
 - **Generic**
 
+  All Go builtin types and custom defined types are supported.
+  Even slice of pointers!
+
+- **Handy**
+
+  One Line Style calling design, aims to be **developer friendly**. 
+  Give not enough shit on the performance and mathmatical rigour.
+
+
 ```go
 	a := goset.Uniq([]int{1, 2, 2, 3, 3, 3, 4, 4, 4, 4}).([]int)
 	b := goset.Uniq([]string{"1", "2", "2", "3", "3", "3", "4"}).([]string)
