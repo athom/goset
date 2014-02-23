@@ -3,15 +3,13 @@ package goset
 import "reflect"
 
 // Operations
-func Uniq(elements interface{}) (r interface{}) {
+func Uniq(elements interface{}) interface{} {
 	v := reflect.ValueOf(elements)
 	if !isAvailableSlice(v) {
-		r = elements
-		return
+		return elements
 	}
 	if v.Len() <= 1 {
-		r = elements
-		return
+		return elements
 	}
 
 	slim := reflect.MakeSlice(reflect.TypeOf(elements), 0, v.Cap())
@@ -31,18 +29,17 @@ func Uniq(elements interface{}) (r interface{}) {
 		slim = reflect.Append(slim, v.Index(i))
 	}
 
-	r = slim.Interface()
-	return
+	return slim.Interface()
 }
 
-func Intersect(aSet interface{}, bSet interface{}) (iSet interface{}) {
-	_, iSet, _, _ = Difference(aSet, bSet)
-	return
+func Intersect(aSet interface{}, bSet interface{}) interface{} {
+	_, iSet, _, _ := Difference(aSet, bSet)
+	return iSet
 }
 
-func Union(aSet interface{}, bSet interface{}) (uSet interface{}) {
-	uSet, _, _, _ = Difference(aSet, bSet)
-	return
+func Union(aSet interface{}, bSet interface{}) interface{} {
+	uSet, _, _, _ := Difference(aSet, bSet)
+	return uSet
 }
 
 func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADifferenceSet, iBDifferenceSet interface{}) {
@@ -96,10 +93,10 @@ func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADi
 	iADifferenceSet = aDifferenceSet.Interface()
 	iBDifferenceSet = bDifferenceSet.Interface()
 
-	return
+	return iUnion, iIntersection, iADifferenceSet, iBDifferenceSet
 }
 
-func AddElement(set interface{}, e interface{}) (r interface{}) {
+func AddElement(set interface{}, e interface{}) interface{} {
 	v := reflect.ValueOf(set)
 	if v.Type().Elem() != reflect.TypeOf(e) {
 		panic("Set and element are not the same type")
@@ -120,17 +117,15 @@ func AddElement(set interface{}, e interface{}) (r interface{}) {
 			e,
 			v.Index(i).Interface(),
 		) {
-			r = set
-			return
+			return set
 		}
 	}
 
 	v = reflect.Append(v, ev)
-	r = v.Interface()
-	return
+	return v.Interface()
 }
 
-func AddElements(aSet interface{}, bSet interface{}) (r interface{}) {
+func AddElements(aSet interface{}, bSet interface{}) interface{} {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
 	if !areAvailableSlices(av, bv) {
@@ -140,24 +135,22 @@ func AddElements(aSet interface{}, bSet interface{}) (r interface{}) {
 	for i := 0; i < bv.Len(); i++ {
 		aSet = AddElement(aSet, bv.Index(i).Interface())
 	}
-	r = Uniq(aSet)
-	return
+	return Uniq(aSet)
 }
 
-func RemoveElement(set interface{}, e interface{}) (r interface{}) {
+func RemoveElement(set interface{}, e interface{}) interface{} {
 	v := reflect.ValueOf(set)
 	if !isAvailableSlice(v) {
 		panic("Invalid Slice")
 	}
 
-	r = set
 	if v.Len() == 0 {
-		return
+		return set
 	}
 
 	ev := reflect.ValueOf(e)
 	if !ev.IsValid() {
-		return
+		return set
 	}
 
 	for i := 0; i < v.Len(); i++ {
@@ -169,15 +162,14 @@ func RemoveElement(set interface{}, e interface{}) (r interface{}) {
 				v.Slice(0, i),
 				v.Slice(i+1, v.Len()),
 			)
-			r = v.Interface()
-			return
+			return v.Interface()
 		}
 	}
 
-	return
+	return set
 }
 
-func RemoveElements(aSet interface{}, bSet interface{}) (r interface{}) {
+func RemoveElements(aSet interface{}, bSet interface{}) interface{} {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
 	if !areAvailableSlices(av, bv) {
@@ -187,12 +179,11 @@ func RemoveElements(aSet interface{}, bSet interface{}) (r interface{}) {
 	for i := 0; i < bv.Len(); i++ {
 		aSet = RemoveElement(aSet, bv.Index(i).Interface())
 	}
-	r = Uniq(aSet)
-	return
+	return Uniq(aSet)
 }
 
 // Detections
-func IsUniq(aSet interface{}) (r bool) {
+func IsUniq(aSet interface{}) bool {
 	v := reflect.ValueOf(aSet)
 	if !isAvailableSlice(v) {
 		return false
@@ -214,20 +205,17 @@ func IsUniq(aSet interface{}) (r bool) {
 	return IsUniq(others.Interface())
 }
 
-func IsEqual(aSet interface{}, bSet interface{}) (r bool) {
+func IsEqual(aSet interface{}, bSet interface{}) bool {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
 	if av.Len() != bv.Len() {
-		r = false
-		return
+		return false
 	}
 	if av.Len() == 0 && bv.Len() == 0 {
-		r = true
-		return
+		return true
 	}
 	if !areAvailableSlices(av, bv) {
-		r = false
-		return
+		return false
 	}
 
 	aMap := make(map[int]bool)
@@ -289,12 +277,12 @@ func IsIncluded(set interface{}, ele interface{}) bool {
 	return false
 }
 
-func IsSubset(subSet interface{}, superSet interface{}) (r bool) {
+func IsSubset(subSet interface{}, superSet interface{}) bool {
 	_, _, aSubSet, _ := Difference(subSet, superSet)
 	return reflect.ValueOf(aSubSet).Len() == 0
 }
 
-func IsSuperset(subSet interface{}, superSet interface{}) (r bool) {
+func IsSuperset(subSet interface{}, superSet interface{}) bool {
 	_, _, _, bSubSet := Difference(subSet, superSet)
 	return reflect.ValueOf(bSubSet).Len() == 0
 }
