@@ -3,6 +3,7 @@
 Go Set Package is a simple library for set operations with generic type supported.
 
 [![Build Status](https://api.travis-ci.org/athom/goset.png?branch=master)](https://travis-ci.org/athom/goset)
+[![GoDoc](https://godoc.org/github.com/athom/goset?status.png)](http://godoc.org/github.com/athom/goset)
 
 
 ## Installation
@@ -18,31 +19,55 @@ Go Set Package is a simple library for set operations with generic type supporte
   All Go builtin types and custom defined types are supported.
   Even slice of pointers!
 
+```go
+a := goset.Uniq([]int{1, 2, 2, 3, 3, 3, 4, 4, 4, 4}).([]int)
+b := goset.Uniq([]string{"1", "2", "2", "3", "3", "3", "4"}).([]string)
+
+type Avatar struct {
+        Age  int
+        Name string
+}
+
+avatars := []Avatar{
+        Avatar{112, "Angg"},
+        Avatar{70, "Roku"},
+        Avatar{230, "Kyoshi"},
+        Avatar{230, "Kyoshi"},
+        Avatar{33, "Kuruk"},
+        Avatar{33, "Kuruk"},
+        Avatar{33, "Kuruk"},
+}
+filteredAvatars := goset.Uniq(avatars).([]Avatar)
+```
+
 - **Handy**
 
-  One Line Style calling design, aims to be **developer friendly**. 
-  Give not enough shit on the performance and mathmatical rigour.
+  One Line Style calling design, aims to be **developer friendly**.   
+  But not enough shit are given on the performance and mathmatical rigour.
 
+Think about how many times you want to tell if a element is in a slice, you have to wrote like this:
 
 ```go
-	a := goset.Uniq([]int{1, 2, 2, 3, 3, 3, 4, 4, 4, 4}).([]int)
-	b := goset.Uniq([]string{"1", "2", "2", "3", "3", "3", "4"}).([]string)
-
-        type Avatar struct {
-                Age  int
-                Name string
+found := false
+for _, e := range records {
+        if e == theRecord {
+                found = true
+                break
         }
-	avatars := []Avatar{
-		Avatar{112, "Angg"},
-		Avatar{70, "Roku"},
-		Avatar{230, "Kyoshi"},
-		Avatar{230, "Kyoshi"},
-		Avatar{33, "Kuruk"},
-		Avatar{33, "Kuruk"},
-		Avatar{33, "Kuruk"},
-	}
-	filteredAvatars := goset.Uniq(avatars).([]Avatar)
+}
+if found {
+        //your code
+}
 ```
+
+Now you can do this in just one line:
+
+```go
+if goset.IsIncluded(records, theRecord) {
+        //your code
+}
+```
+
 
 ## Useage
 
@@ -51,39 +76,39 @@ Go Set Package is a simple library for set operations with generic type supporte
 ###### 1. IsUniq
 
 ```go
-	a := []int{1, 2, 3, 4, 4, 2, 3, 3, 4, 4}
-	ua := goset.Uniq(a).([]int)
+a := []int{1, 2, 3, 4, 4, 2, 3, 3, 4, 4}
+ua := goset.Uniq(a).([]int)
 ```
 
 ###### 2. IsEqual
 
 ```go
-	a := []int{1, 2, 3}
-	b := []int{2, 1, 3}
-	ok := goset.IsEqual(a, b)
+a := []int{1, 2, 3}
+b := []int{2, 1, 3}
+ok := goset.IsEqual(a, b)
 ```
 
 ###### 3. IsIncluded
 
 ```go
-	a := []int{1, 2, 3, 4}
-	ok := goset.IsIncluded(a, 1)
+a := []int{1, 2, 3, 4}
+ok := goset.IsIncluded(a, 1)
 ```
 
 ###### 4. IsSubset
 
 ```go
-	a := []int{1, 2, 3, 4}
-	a1 := []int{1, 2, 3}
-	ok := goset.IsSubset(a1, a)
+a := []int{1, 2, 3, 4}
+a1 := []int{1, 2, 3}
+ok := goset.IsSubset(a1, a)
 ```
 
 ###### 5. IsSuperset
 
 ```go
-	a := []int{1, 2, 3, 4}
-	a1 := []int{1, 2, 3}
-	ok := goset.IsSuperset(a, a1)
+a := []int{1, 2, 3, 4}
+a1 := []int{1, 2, 3}
+ok := goset.IsSuperset(a, a1)
 ```
 
 
@@ -92,60 +117,60 @@ Go Set Package is a simple library for set operations with generic type supporte
 ###### 1. Uniq
 
 ```go
-	a := []int{1, 2, 3, 4, 4, 2, 3, 3, 4, 4}
-	ua := goset.Uniq(a).([]int)
+a := []int{1, 2, 3, 4, 4, 2, 3, 3, 4, 4}
+ua := goset.Uniq(a).([]int)
 ```
 
 ###### 2. Intersect 
 
 ```go
-	a1 := []int{1, 2, 3, 4}
-	b1 := []int{3, 4, 5, 6}
-	c1 := goset.Intersect(a1, b1).([]int)
+a1 := []int{1, 2, 3, 4}
+b1 := []int{3, 4, 5, 6}
+c1 := goset.Intersect(a1, b1).([]int)
 ```
 
 ###### 3. Union
 
 ```go
-	a1 := []int{1, 2, 3, 4}
-	b1 := []int{3, 4, 5, 6}
-	c1 := goset.Union(a1, b1).([]int)
+a1 := []int{1, 2, 3, 4}
+b1 := []int{3, 4, 5, 6}
+c1 := goset.Union(a1, b1).([]int)
 ```
 
 ###### 4. Difference
 
 ```go
-	a1 := []int{1, 2, 3, 4}
-	b1 := []int{3, 4, 5, 6}
-	_, _, c1, d1 := goset.Difference(a1, b1)
+a1 := []int{1, 2, 3, 4}
+b1 := []int{3, 4, 5, 6}
+_, _, c1, d1 := goset.Difference(a1, b1)
 ```
 
 ###### 5. AddElement
 
 ```go
-	a := []int{1, 2, 3, 4}
-	a = goset.AddElement(a, 5).([]int)
+a := []int{1, 2, 3, 4}
+a = goset.AddElement(a, 5).([]int)
 ```
 
 ###### 6. AddElements
 
 ```go
-	a := []int{1, 2, 3, 4}
-	a = goset.AddElements(a, []int{5, 6}).([]int)
+a := []int{1, 2, 3, 4}
+a = goset.AddElements(a, []int{5, 6}).([]int)
 ```
 
 ###### 7. RemoveElement
 
 ```go
-	a := []int{1, 2, 3, 4}
-	a = goset.RemoveElement(a, 4).([]int)
+a := []int{1, 2, 3, 4}
+a = goset.RemoveElement(a, 4).([]int)
 ```
 
 ###### 8. RemoveElements
 
 ```go
-	a := []int{1, 2, 3, 4}
-	a = goset.RemoveElements(a, []int{3, 4}).([]int)
+a := []int{1, 2, 3, 4}
+a = goset.RemoveElements(a, []int{3, 4}).([]int)
 ```
 
 

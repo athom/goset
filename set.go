@@ -2,7 +2,7 @@ package goset
 
 import "reflect"
 
-// Operations
+// Uniq the slice of objects, the objects must be the same type, both builtin and custom types are supported.
 func Uniq(elements interface{}) interface{} {
 	v := reflect.ValueOf(elements)
 	if !isAvailableSlice(v) {
@@ -32,16 +32,22 @@ func Uniq(elements interface{}) interface{} {
 	return slim.Interface()
 }
 
+// Return the intersection of aSet and bSet, aSet and bSet must be a slice type, and the two slice must have the same type of elements.
+// Empty slice is allowed, but nil is not allowed to represent the null set concept.
 func Intersect(aSet interface{}, bSet interface{}) interface{} {
 	_, iSet, _, _ := Difference(aSet, bSet)
 	return iSet
 }
 
+// Return the union of aSet and bSet, aSet and bSet must be a slice type, and the two slice must have the same type of elements.
+// Empty slice is allowed, but nil is not allowed to represent the null set concept.
 func Union(aSet interface{}, bSet interface{}) interface{} {
 	uSet, _, _, _ := Difference(aSet, bSet)
 	return uSet
 }
 
+// Return the difference of aSet and bSet, aSet and bSet must be a slice type, and the two slice must have the same type of elements.
+// Empty slice is allowed, but nil is not allowed to represent the null set concept.
 func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADifferenceSet, iBDifferenceSet interface{}) {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
@@ -96,6 +102,8 @@ func Difference(aSet interface{}, bSet interface{}) (iUnion, iIntersection, iADi
 	return iUnion, iIntersection, iADifferenceSet, iBDifferenceSet
 }
 
+// Add an element to a set, the element's type must be the same as the type of existed set's element
+// If the element's value already exists on the set, the return set keep the same as the old set.
 func AddElement(set interface{}, e interface{}) interface{} {
 	v := reflect.ValueOf(set)
 	if v.Type().Elem() != reflect.TypeOf(e) {
@@ -125,6 +133,8 @@ func AddElement(set interface{}, e interface{}) interface{} {
 	return v.Interface()
 }
 
+// Merge two sets, aSet and bSet must be the same type
+// Same effect as the union aSet and bSet.
 func AddElements(aSet interface{}, bSet interface{}) interface{} {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
@@ -138,6 +148,8 @@ func AddElements(aSet interface{}, bSet interface{}) interface{} {
 	return Uniq(aSet)
 }
 
+// Remove an element to a set, the element's type must be the same as the type of existed set's element
+// If the element's value did not exists on the set, the return set keep the same as the old set.
 func RemoveElement(set interface{}, e interface{}) interface{} {
 	v := reflect.ValueOf(set)
 	if !isAvailableSlice(v) {
@@ -169,6 +181,8 @@ func RemoveElement(set interface{}, e interface{}) interface{} {
 	return set
 }
 
+// Reduce aSet's elements by looking up the bSet, aSet and bSet must be the same type
+// Same effect as the difference aSet and bSet.
 func RemoveElements(aSet interface{}, bSet interface{}) interface{} {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
@@ -182,7 +196,7 @@ func RemoveElements(aSet interface{}, bSet interface{}) interface{} {
 	return Uniq(aSet)
 }
 
-// Detections
+// To tell if the aSet is uniq, aSet must be a slices.
 func IsUniq(aSet interface{}) bool {
 	v := reflect.ValueOf(aSet)
 	if !isAvailableSlice(v) {
@@ -205,6 +219,8 @@ func IsUniq(aSet interface{}) bool {
 	return IsUniq(others.Interface())
 }
 
+// Tell if the two set is equal, both aSet and bSet must be slices with same types.
+// Sequence of elements is ignored to be the factor of equal detection.
 func IsEqual(aSet interface{}, bSet interface{}) bool {
 	av := reflect.ValueOf(aSet)
 	bv := reflect.ValueOf(bSet)
@@ -249,6 +265,7 @@ func IsEqual(aSet interface{}, bSet interface{}) bool {
 	return hits == av.Len() && hits == bv.Len()
 }
 
+// Return true if set contains the ele element, set must be a slice with the same type of ele.
 func IsIncluded(set interface{}, ele interface{}) bool {
 	ev := reflect.ValueOf(ele)
 	if !ev.IsValid() {
@@ -277,12 +294,14 @@ func IsIncluded(set interface{}, ele interface{}) bool {
 	return false
 }
 
-func IsSubset(subSet interface{}, superSet interface{}) bool {
-	_, _, aSubSet, _ := Difference(subSet, superSet)
+// Return true if aSet is the subset of bSet, bothe aSet and bSet must be slices and have the same type of elements.
+func IsSubset(aSet interface{}, bSet interface{}) bool {
+	_, _, aSubSet, _ := Difference(aSet, bSet)
 	return reflect.ValueOf(aSubSet).Len() == 0
 }
 
-func IsSuperset(subSet interface{}, superSet interface{}) bool {
-	_, _, _, bSubSet := Difference(subSet, superSet)
+// Return true if aSet is the superset of bSet, bothe aSet and bSet must be slices and their elements's type must be the same too.
+func IsSuperset(aSet interface{}, bSet interface{}) bool {
+	_, _, _, bSubSet := Difference(aSet, bSet)
 	return reflect.ValueOf(bSubSet).Len() == 0
 }
