@@ -14,7 +14,16 @@ type Poet struct {
 }
 
 func IsSamePoet(a Poet, b Poet) bool {
-	return a.Name == b.Name
+	if a.Age != b.Age {
+		return false
+	}
+	if a.Name != b.Name {
+		return false
+	}
+	if len(a.Poems) != len(b.Name) {
+		return false
+	}
+	return IsEqual(a.Poems, b.Poems)
 }
 
 func UniqPoets(poets []Poet) (r []Poet) {
