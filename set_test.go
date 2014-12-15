@@ -1,9 +1,10 @@
 package goset
 
 import (
+	"testing"
+
 	"labix.org/v2/mgo/bson"
 	. "launchpad.net/gocheck"
-	"testing"
 )
 
 func Test(t *testing.T) { TestingT(t) }
@@ -878,6 +879,52 @@ func (s *TestSet) TestRemoveElements(c *C) {
 	}
 	i = RemoveElements(set, aSet)
 	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+}
+
+func (s *TestSet) TestMapWithEmptySlice(c *C) {
+	set := []bson.ObjectId{}
+	eSet := []string{}
+	rSet := Map(set, func(id bson.ObjectId) string {
+		return id.Hex()
+	}, []string{}).([]string)
+	assertSetStr(eSet, rSet, c)
+}
+
+func (s *TestSet) TestMap(c *C) {
+	Id1 := bson.NewObjectId()
+	Id2 := bson.NewObjectId()
+	Id3 := bson.NewObjectId()
+	Id4 := bson.NewObjectId()
+	Id5 := bson.NewObjectId()
+	var set, eSet, rSet []bson.ObjectId
+	var setHex, eSetHex, rSetHex []string
+	set = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+		Id5,
+	}
+	eSetHex = []string{
+		Id1.Hex(),
+		Id2.Hex(),
+		Id3.Hex(),
+		Id4.Hex(),
+		Id5.Hex(),
+	}
+
+	rSetHex = Map(set, func(id bson.ObjectId) string {
+		return id.Hex()
+	}, []string{}).([]string)
+	assertSetStr(eSetHex, rSetHex, c)
+
+	setHex = eSetHex
+	eSet = set
+
+	rSet = Map(setHex, func(id string) bson.ObjectId {
+		return bson.ObjectIdHex(id)
+	}, []bson.ObjectId{}).([]bson.ObjectId)
+	assertSet(eSet, rSet, c)
 }
 
 func checkSet(eUSet, eISet, eASet, eBSet []bson.ObjectId, uSet, iSet, aSubSet, bSubSet interface{}, c *C) {

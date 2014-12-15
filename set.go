@@ -1,6 +1,10 @@
 package goset
 
-import "reflect"
+import (
+	"reflect"
+
+	"github.com/bom-d-van/goutil/printutils"
+)
 
 // Uniq the slice of objects, the objects must be the same type, both builtin and custom types are supported.
 func Uniq(elements interface{}) interface{} {
@@ -304,4 +308,31 @@ func IsSubset(aSet interface{}, bSet interface{}) bool {
 func IsSuperset(aSet interface{}, bSet interface{}) bool {
 	_, _, _, bSubSet := Difference(aSet, bSet)
 	return reflect.ValueOf(bSubSet).Len() == 0
+}
+
+// mapFunc accepts one parameter and output one parameter
+// like func(string)int
+// defaultReturnSlice is exacly mapped when the set is an empty slice
+func Map(set interface{}, mapFunc interface{}, defaultReturnSlice interface{}) (mapped interface{}) {
+	vSet := reflect.ValueOf(set)
+	if vSet.Kind() != reflect.Slice {
+		panic("source set must be slice")
+	}
+
+	vFunc := reflect.ValueOf(mapFunc)
+	if vFunc.Kind() != reflect.Func {
+		panic("mapper must be a func")
+	}
+
+	if vSet.Len() == 0 {
+		return defaultReturnSlice
+	}
+
+	slim := reflect.MakeSlice(reflect.TypeOf(defaultReturnSlice), 0, vSet.Cap())
+	for i := 0; i < vSet.Len(); i++ {
+		ele := vFunc.Call([]reflect.Value{vSet.Index(i)})
+		printutils.PrettyPrint(ele[0].Interface())
+		slim = reflect.Append(slim, ele[0])
+	}
+	return slim.Interface()
 }
