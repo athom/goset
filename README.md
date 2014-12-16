@@ -1,5 +1,7 @@
 # Go Set
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/athom/goset?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Go Set Package is a simple library for set operations with generic type supported.
 
 [![Build Status](https://api.travis-ci.org/athom/goset.png?branch=master)](https://travis-ci.org/athom/goset)
