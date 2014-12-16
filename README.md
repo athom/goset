@@ -78,6 +78,7 @@ if goset.IsIncluded(records, theRecord) {
 ```go
 a := []int{1, 2, 3, 4, 4, 2, 3, 3, 4, 4}
 ua := goset.Uniq(a).([]int)
+// result: ok = false
 ```
 
 ###### 2. IsEqual
@@ -86,6 +87,7 @@ ua := goset.Uniq(a).([]int)
 a := []int{1, 2, 3}
 b := []int{2, 1, 3}
 ok := goset.IsEqual(a, b)
+// result: ok = true
 ```
 
 ###### 3. IsIncluded
@@ -93,6 +95,7 @@ ok := goset.IsEqual(a, b)
 ```go
 a := []int{1, 2, 3, 4}
 ok := goset.IsIncluded(a, 1)
+// result: ok = true
 ```
 
 ###### 4. IsSubset
@@ -101,6 +104,7 @@ ok := goset.IsIncluded(a, 1)
 a := []int{1, 2, 3, 4}
 a1 := []int{1, 2, 3}
 ok := goset.IsSubset(a1, a)
+// result: ok = true
 ```
 
 ###### 5. IsSuperset
@@ -109,6 +113,7 @@ ok := goset.IsSubset(a1, a)
 a := []int{1, 2, 3, 4}
 a1 := []int{1, 2, 3}
 ok := goset.IsSuperset(a, a1)
+// result: ok = true
 ```
 
 
@@ -119,6 +124,7 @@ ok := goset.IsSuperset(a, a1)
 ```go
 a := []int{1, 2, 3, 4, 4, 2, 3, 3, 4, 4}
 ua := goset.Uniq(a).([]int)
+// result: ua = []int{1, 2, 3, 4}
 ```
 
 ###### 2. Intersect 
@@ -127,6 +133,7 @@ ua := goset.Uniq(a).([]int)
 a1 := []int{1, 2, 3, 4}
 b1 := []int{3, 4, 5, 6}
 c1 := goset.Intersect(a1, b1).([]int)
+// result: c1 = []int{3, 4}
 ```
 
 ###### 3. Union
@@ -135,6 +142,7 @@ c1 := goset.Intersect(a1, b1).([]int)
 a1 := []int{1, 2, 3, 4}
 b1 := []int{3, 4, 5, 6}
 c1 := goset.Union(a1, b1).([]int)
+// result: c1 = []int{1, 2, 3, 4, 5, 6}
 ```
 
 ###### 4. Difference
@@ -143,6 +151,8 @@ c1 := goset.Union(a1, b1).([]int)
 a1 := []int{1, 2, 3, 4}
 b1 := []int{3, 4, 5, 6}
 _, _, c1, d1 := goset.Difference(a1, b1)
+// result: c1 = []int{1, 2}
+//         d1 = []int{5, 6}
 ```
 
 ###### 5. AddElement
@@ -150,6 +160,7 @@ _, _, c1, d1 := goset.Difference(a1, b1)
 ```go
 a := []int{1, 2, 3, 4}
 a = goset.AddElement(a, 5).([]int)
+// result: a = []int{1, 2, 3, 4, 5}
 ```
 
 ###### 6. AddElements
@@ -157,6 +168,7 @@ a = goset.AddElement(a, 5).([]int)
 ```go
 a := []int{1, 2, 3, 4}
 a = goset.AddElements(a, []int{5, 6}).([]int)
+// result: a = []int{1, 2, 3, 4, 5, 6}
 ```
 
 ###### 7. RemoveElement
@@ -164,6 +176,7 @@ a = goset.AddElements(a, []int{5, 6}).([]int)
 ```go
 a := []int{1, 2, 3, 4}
 a = goset.RemoveElement(a, 4).([]int)
+// result: a = []int{1, 2, 3}
 ```
 
 ###### 8. RemoveElements
@@ -171,9 +184,18 @@ a = goset.RemoveElement(a, 4).([]int)
 ```go
 a := []int{1, 2, 3, 4}
 a = goset.RemoveElements(a, []int{3, 4}).([]int)
+// result: a = []int{1, 2}
 ```
 
+###### 9. Map
 
+```go
+x := []int{1, 2, 3, 4}
+y := goset.Map(a, func(i int) string {
+       return "(" + strconv.Itoa(i) + ")"
+}, []string{}).([]string)
+// result: y = []string{"(1)", "(2)", "(3)", "(4)"}
+```
 
 ## License
 

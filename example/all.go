@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/athom/goset"
 )
 
@@ -95,4 +97,16 @@ func main() {
 	//RemoveElements
 	aSet = goset.RemoveElements(aSet, []int{5, 6, 7}).([]int)
 	fmt.Println("After RemoveElements", aSet)
+	//Map
+	ages := goset.Map(avatars, func(avatar Avatar) int {
+		return avatar.Age
+	}, []int{}).([]int)
+	fmt.Println("After Map", ages)
+
+	x := []int{1, 2, 3, 4}
+	y := goset.Map(a, func(i int) string {
+		return "(" + strconv.Itoa(i) + ")"
+	}, []string{}).([]string)
+	fmt.Println(x)
+	fmt.Println(y)
 }
