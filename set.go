@@ -2,8 +2,6 @@ package goset
 
 import (
 	"reflect"
-
-	"github.com/bom-d-van/goutil/printutils"
 )
 
 // Uniq the slice of objects, the objects must be the same type, both builtin and custom types are supported.
@@ -331,7 +329,6 @@ func Map(set interface{}, mapFunc interface{}, defaultReturnSlice interface{}) (
 	slim := reflect.MakeSlice(reflect.TypeOf(defaultReturnSlice), 0, vSet.Cap())
 	for i := 0; i < vSet.Len(); i++ {
 		ele := vFunc.Call([]reflect.Value{vSet.Index(i)})
-		printutils.PrettyPrint(ele[0].Interface())
 		slim = reflect.Append(slim, ele[0])
 	}
 	return slim.Interface()
