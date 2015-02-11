@@ -1,8 +1,6 @@
 package goset
 
-import (
-	"reflect"
-)
+import "reflect"
 
 // Uniq the slice of objects, the objects must be the same type, both builtin and custom types are supported.
 func Uniq(elements interface{}) interface{} {
@@ -192,10 +190,15 @@ func RemoveElements(aSet interface{}, bSet interface{}) interface{} {
 		panic("Invalid Slices")
 	}
 
-	for i := 0; i < bv.Len(); i++ {
-		aSet = RemoveElement(aSet, bv.Index(i).Interface())
+	newSetSlice := reflect.MakeSlice(reflect.TypeOf(aSet), av.Len(), av.Cap())
+	for i := 0; i < av.Len(); i++ {
+		newSetSlice.Index(i).Set(av.Index(i))
 	}
-	return Uniq(aSet)
+	var newSet = newSetSlice.Interface()
+	for i := 0; i < bv.Len(); i++ {
+		newSet = RemoveElement(newSet, bv.Index(i).Interface())
+	}
+	return Uniq(newSet)
 }
 
 // To tell if the aSet is uniq, aSet must be a slices.

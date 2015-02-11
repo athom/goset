@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/athom/goset"
 )
 
@@ -12,9 +13,10 @@ type Avatar struct {
 
 func main() {
 	a := []int{1, 2, 3, 4}
-	fmt.Println("before remove_elements: ", a)
-	a = goset.RemoveElements(a, []int{3, 4}).([]int)
-	fmt.Println("after remove_elements: ", a)
+	fmt.Println("before remove_elements:(original set) ", a)
+	q := goset.RemoveElements(a, []int{3, 4}).([]int)
+	fmt.Println("after remove_elements: ", q)
+	fmt.Println("after remove_elements(original set): ", a)
 
 	b := []string{"1", "2", "3", "4"}
 	fmt.Println("before remove_elements: ", b)

@@ -790,10 +790,17 @@ func (s *TestSet) TestRemoveElements(c *C) {
 	Id3 := bson.NewObjectId()
 	Id4 := bson.NewObjectId()
 	Id5 := bson.NewObjectId()
-	var set, eSet, aSet []bson.ObjectId
+	var oldSet, set, eSet, aSet []bson.ObjectId
 	var i interface{}
 
 	//Happy path
+	oldSet = []bson.ObjectId{
+		Id1,
+		Id2,
+		Id3,
+		Id4,
+		Id5,
+	}
 	set = []bson.ObjectId{
 		Id1,
 		Id2,
@@ -812,6 +819,8 @@ func (s *TestSet) TestRemoveElements(c *C) {
 	}
 	i = RemoveElements(set, aSet)
 	c.Check(IsEqual(eSet, i.([]bson.ObjectId)), Equals, true)
+	// should not modify input parameters
+	c.Check(IsEqual(oldSet, set), Equals, true)
 
 	//Remove empty slice
 	set = []bson.ObjectId{
