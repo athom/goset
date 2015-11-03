@@ -1,7 +1,7 @@
 language: go
 
 go:
-    - 1.2
+    - 1.5
 
 install:
     - go get labix.org/v2/mgo/bson
