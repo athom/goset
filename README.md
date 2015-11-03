@@ -199,6 +199,55 @@ y := goset.Map(a, func(i int) string {
 // result: y = []string{"(1)", "(2)", "(3)", "(4)"}
 ```
 
+###### 10. Reorder
+
+```go
+type Cat struct {
+        Id   string
+        Name string
+}
+
+cats := []*Cat{
+        &Cat{
+                1,
+                "Tom",
+        },
+        &Cat{
+                2,
+                "Jerry",
+        },
+        &Cat{
+                3,
+                "HeiMao",
+        },
+        &Cat{
+                4,
+                "Coffee",
+        },
+}
+order := []int{3, 1, 4, 2}
+cats = goset.Reorder(order, cats, "Id").([]*Cat)
+// result: 
+cats = []*Cat{
+        &Cat{
+                3,
+                "HeiMao",
+        },
+        &Cat{
+                1,
+                "Tom",
+        },
+        &Cat{
+                4,
+                "Coffee",
+        },
+        &Cat{
+                2,
+                "Jerry",
+        },
+}
+```
+
 ## License
 
 Go Set is released under the [WTFPL License](http://www.wtfpl.net/txt/copying).
