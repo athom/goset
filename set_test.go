@@ -936,6 +936,97 @@ func (s *TestSet) TestMap(c *C) {
 	assertSet(eSet, rSet, c)
 }
 
+func (s *TestSet) TestReorder(c *C) {
+	type Cat struct {
+		Id   string
+		Name string
+	}
+
+	cats := []*Cat{
+		&Cat{
+			"1",
+			"Mao",
+		},
+		&Cat{
+			"2",
+			"Deng",
+		},
+		&Cat{
+			"3",
+			"Jiang",
+		},
+		&Cat{
+			"4",
+			"Hu",
+		},
+	}
+	new_cats := Reorder([]string{"2", "1", "3", "4"}, cats, "Id").([]*Cat)
+	expected_cats := []*Cat{
+		&Cat{
+			"2",
+			"Deng",
+		},
+		&Cat{
+			"1",
+			"Mao",
+		},
+		&Cat{
+			"3",
+			"Jiang",
+		},
+		&Cat{
+			"4",
+			"Hu",
+		},
+	}
+	c.Check(IsEqual(expected_cats, new_cats), Equals, true)
+
+	type Dog struct {
+		Id   int
+		Name string
+	}
+
+	dogs := []*Dog{
+		&Dog{
+			1,
+			"Mao",
+		},
+		&Dog{
+			2,
+			"Deng",
+		},
+		&Dog{
+			3,
+			"Jiang",
+		},
+		&Dog{
+			4,
+			"Hu",
+		},
+	}
+	new_dogs := Reorder([]int{2, 1, 3, 4}, dogs, "Id").([]*Dog)
+	expected_dogs := []*Dog{
+		&Dog{
+			2,
+			"Deng",
+		},
+		&Dog{
+			1,
+			"Mao",
+		},
+		&Dog{
+			3,
+			"Jiang",
+		},
+		&Dog{
+			4,
+			"Hu",
+		},
+	}
+	c.Check(IsEqual(expected_dogs, new_dogs), Equals, true)
+
+}
+
 func checkSet(eUSet, eISet, eASet, eBSet []bson.ObjectId, uSet, iSet, aSubSet, bSubSet interface{}, c *C) {
 	assertSet(eUSet, uSet.([]bson.ObjectId), c)
 	assertSet(eISet, iSet.([]bson.ObjectId), c)

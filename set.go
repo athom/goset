@@ -1,6 +1,9 @@
 package goset
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 // Uniq the slice of objects, the objects must be the same type, both builtin and custom types are supported.
 func Uniq(elements interface{}) interface{} {
@@ -335,4 +338,62 @@ func Map(set interface{}, mapFunc interface{}, defaultReturnSlice interface{}) (
 		slim = reflect.Append(slim, ele[0])
 	}
 	return slim.Interface()
+}
+
+// ids is a slice of buildin types
+// objs is a slice of structs
+// fieldName is the name of ids
+// reorderObjects is the same set of objs with order changed according to the ids
+func Reorder(ids interface{}, objs interface{}, fieldName string) (reordedObjects interface{}) {
+	objsType := reflect.TypeOf(objs)
+	if objsType.Kind() != reflect.Slice {
+		panic("objs should be slice")
+	}
+
+	idsType := reflect.TypeOf(ids)
+	if idsType.Kind() != reflect.Slice {
+		panic("ids should be slice")
+	}
+
+	idsValue := reflect.ValueOf(ids)
+	objsValue := reflect.ValueOf(objs)
+
+	// fast return if objs is empty or ids is abnormal
+	if objsValue.Len() == 0 || objsValue.Len() != idsValue.Len() {
+		return objs
+	}
+
+	idSlice := reflect.MakeSlice(idsType, 0, idsValue.Cap())
+	for i := 0; i < idsValue.Len(); i++ {
+		ev := idsValue.Index(i)
+		idSlice = reflect.Append(idSlice, ev)
+	}
+
+	m := make(map[string]reflect.Value)
+
+	for i := 0; i < objsValue.Len(); i++ {
+		var ev reflect.Value
+		old_ev := objsValue.Index(i)
+		if old_ev.Kind() == reflect.Ptr {
+			ev = old_ev.Elem()
+		} else {
+			ev = old_ev
+		}
+
+		id := ev.FieldByName(fieldName)
+		s := fmt.Sprintf("%v", id)
+		m[s] = old_ev
+	}
+
+	newObjs := reflect.MakeSlice(objsType, 0, objsValue.Cap())
+	for i := 0; i < idSlice.Len(); i++ {
+		id := idSlice.Index(i)
+		k := fmt.Sprintf("%v", id)
+		if v, ok := m[k]; ok {
+			newObjs = reflect.Append(newObjs, v)
+		}
+	}
+
+	return newObjs.Interface()
+
 }
